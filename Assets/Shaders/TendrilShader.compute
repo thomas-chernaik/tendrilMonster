@@ -1,0 +1,22 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+//a buffer to contain the vertices of the tendril
+RWStructuredBuffer<float3> vertices;
+//a buffer to contain the vertices of the triangles
+RWStructuredBuffer<float3> triangles;
+//The random variation of tendrils
+float randomNoiseLevel;
+//The amp and frequency of sine cariation on tendrils
+float sineAmp;
+float sineFreq;
+
+[numthreads(8,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    //calculate the 
+    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+}
