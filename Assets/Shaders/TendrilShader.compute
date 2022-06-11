@@ -12,11 +12,54 @@ float randomNoiseLevel;
 //The amp and frequency of sine cariation on tendrils
 float sineAmp;
 float sineFreq;
+float length;
+float width;
+int numTrisOnWidth;
+int numTrisOnLength;
 
 [numthreads(8,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
-{
+{   
     // TODO: insert actual code here!
-    //calculate the 
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    //calculate the vertices and triangles
+    //we are going to hard set the length and vertNum temporarily
+    length = 5.0;
+    width = 1.0;
+    numTrisOnWidth = 2;
+    numTrisOnLength = 2;
+    int vertexCount = 0;
+    //loop through vertexes
+	for (int i = 0; i < numTrisOnLength * length; i++)
+	{
+        //calculate the Y value of the vertexes here
+		float yVal = i * length;
+        //work out the X value for each vertex
+		for (int j = 0; j < numTrisOnWidth + 1; j++)
+		{
+            //calculate offset here later
+			float offset = 0.0;
+			vertices[vertexCount++] = float3(offset + j * width / numTrisOnWidth, yVal, 0);
+		}
+	}
+	int vertex1, vertex2, vertex3, vertex4, triNum;
+    //triangulate
+    //our mesh will be made up of squares made up of two triangles with the diagonal from bottom left to top right
+    for (i = 0; i < numTrisOnLength * length; i++)
+    {
+        //go through each column of triangles separately
+        for (int j = 0; j < numTrisOnWidth; j++)
+        {
+            //calculate the indexes of the vertices.
+            //vertex 1 and 2 are the bottom vertices from left to right and 3 and 4 are thetop
+            
+			vertex1 = i * numTrisOnWidth + j;
+			vertex2 = vertex1 + 1;
+			vertex3 = (i + 1) * numTrisOnWidth + j;
+			vertex4 = vertex3 + 1;
+            //add the triangles
+			triangles[triNum++] = float3(vertex1, vertex2, vertex4);
+			triangles[triNum++] = float3(vertex1, vertex4, vertex3);
+            
+		}
+    }
 }
