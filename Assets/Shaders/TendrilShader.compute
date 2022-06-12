@@ -6,7 +6,7 @@
 //a buffer to contain the vertices of the tendril
 RWStructuredBuffer<float3> vertices;
 //a buffer to contain the vertices of the triangles
-RWStructuredBuffer<float3> triangles;
+RWStructuredBuffer<int> triangles;
 //The random variation of tendrils
 float randomNoiseLevel;
 //The amp and frequency of sine cariation on tendrils
@@ -32,7 +32,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 	for (int i = 0; i < numTrisOnLength * length; i++)
 	{
         //calculate the Y value of the vertexes here
-		float yVal = i * length;
+		float yVal = i / (float) numTrisOnLength;
         //work out the X value for each vertex
 		for (int j = 0; j < numTrisOnWidth + 1; j++)
 		{
@@ -57,8 +57,12 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 			vertex3 = (i + 1) * numTrisOnWidth + j;
 			vertex4 = vertex3 + 1;
             //add the triangles
-			triangles[triNum++] = float3(vertex1, vertex2, vertex4);
-			triangles[triNum++] = float3(vertex1, vertex4, vertex3);
+			triangles[triNum++] = vertex1;
+			triangles[triNum++] = vertex2;
+			triangles[triNum++] = vertex4;
+			triangles[triNum++] = vertex1;
+			triangles[triNum++] = vertex4;
+			triangles[triNum++] = vertex3;
             
 		}
     }
