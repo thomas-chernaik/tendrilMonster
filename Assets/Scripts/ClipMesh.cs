@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 
 public class ClipMesh : MonoBehaviour
 {
     public ComputeShader shader;
-    public float scale;
     public float meshLength;
-    MeshFilter meshFilter;
+    //public Slider scaler;
+    public float scaler;
     SkinnedMeshRenderer meshRenderer;
     Mesh newMesh;
     List<Vector3> originalVertices;
@@ -19,13 +20,20 @@ public class ClipMesh : MonoBehaviour
     static readonly int vertsOutID = Shader.PropertyToID("verticesOut");
     int kernelHandle;
 
-
+    public void DisposeBuffers()
+    {
+        verticesInBuffer.Dispose();
+        verticesOutBuffer.Dispose();
+    }
     // Start is called before the first frame update
     void Start()
     {
-        meshFilter = GetComponent<MeshFilter>();
+
+        shader = Instantiate(shader);
+        //scaler.onValueChanged.AddListener(delegate { UpdateMesh(); });
         meshRenderer = GetComponent<SkinnedMeshRenderer>();
-        originalVertices = meshFilter.sharedMesh.vertices.ToList();
+
+        originalVertices = meshRenderer.sharedMesh.vertices.ToList();
         verticesInBuffer = new ComputeBuffer(originalVertices.Count, sizeof(float) * 3);
         verticesOutBuffer = new ComputeBuffer(originalVertices.Count, sizeof(float) * 3);
         kernelHandle = shader.FindKernel("CSMain");
@@ -33,16 +41,15 @@ public class ClipMesh : MonoBehaviour
         shader.SetBuffer(kernelHandle, vertsOutID, verticesOutBuffer);
         verticesInBuffer.SetData(originalVertices);
         newMesh = new Mesh();
-        newMesh.vertices = meshFilter.sharedMesh.vertices;
-        newMesh.triangles = meshFilter.sharedMesh.triangles;
-        newMesh.bounds = meshFilter.sharedMesh.bounds;
-        newMesh.SetUVs(0, meshFilter.sharedMesh.uv);
-        newMesh.boneWeights = meshFilter.sharedMesh.boneWeights;
-        newMesh.bindposes = meshFilter.sharedMesh.bindposes;
-        newMesh.normals = meshFilter.sharedMesh.normals;
-        meshFilter.sharedMesh = newMesh;
+        newMesh.vertices = meshRenderer.sharedMesh.vertices;
+        newMesh.triangles = meshRenderer.sharedMesh.triangles;
+        newMesh.bounds = meshRenderer.sharedMesh.bounds;
+        newMesh.SetUVs(0, meshRenderer.sharedMesh.uv);
+        newMesh.boneWeights = meshRenderer.sharedMesh.boneWeights;
+        newMesh.bindposes = meshRenderer.sharedMesh.bindposes;
+        newMesh.normals = meshRenderer.sharedMesh.normals;
         meshRenderer.sharedMesh = newMesh;
-
+        UpdateMesh();
     }
     List<Vector3> getVertices()
     {
@@ -56,15 +63,19 @@ public class ClipMesh : MonoBehaviour
         return toReturn;
     }
     // Update is called once per frame
-    void Update()
+    public void UpdateMesh()
     {
-        if(Input.GetKeyDown("p"))
+        if(meshRenderer == null)
         {
-            print("p");
-            shader.SetFloat("length", scale * meshLength);
-            shader.Dispatch(kernelHandle, (int)Mathf.Ceil(originalVertices.Count / 64), 1, 1);
-            meshRenderer.sharedMesh.SetVertices(getVertices());
+            print("hey");
         }
+        shader.SetFloat("length", scaler * meshLength);
+        shader.Dispatch(kernelHandle, 1+(int)Mathf.Ceil(originalVertices.Count / 64), 1, 1);
+        meshRenderer.sharedMesh.SetVertices(getVertices());
 
+    }
+    private void Update()
+    {
+        UpdateMesh();
     }
 }
