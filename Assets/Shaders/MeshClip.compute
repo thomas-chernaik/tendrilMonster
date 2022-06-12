@@ -3,12 +3,22 @@
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
-RWTexture2D<float4> Result;
-
-[numthreads(8,8,1)]
+RWStructuredBuffer<float3> verticesIn;
+RWStructuredBuffer<float3> verticesOut;
+float length;
+[numthreads(64,1,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
+    //if the y coord of this vertex is more than length
+    if(verticesIn[id.x].z > length)
+    {
+        //add it to verticesOut with zero x and z values and y value of length
+        verticesOut[id.x] = float3(0, 0, length);
 
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    }
+    else
+    {
+        //we just need to add the vertex to vertecies out
+        verticesOut[id.x] = verticesIn[id.x];
+    }
 }
