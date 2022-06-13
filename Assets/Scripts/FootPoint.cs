@@ -9,6 +9,7 @@ public class FootPoint : MonoBehaviour
     public float despawnDist;
     public LayerMask mask;
     public GameObject tentacle;
+    public MonsterLegs legs;
     GameObject selfTentacle;
     // Start is called before the first frame update
     void Start()
@@ -27,7 +28,7 @@ public class FootPoint : MonoBehaviour
             }
             else
             {
-                Despawn();
+                legs.Fall();
             }
         }
         selfTentacle = Instantiate(tentacle);
