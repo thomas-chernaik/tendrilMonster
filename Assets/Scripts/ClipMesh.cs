@@ -24,9 +24,10 @@ public class ClipMesh : MonoBehaviour
     {
         verticesInBuffer.Dispose();
         verticesOutBuffer.Dispose();
+        Destroy(gameObject);
     }
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
 
         shader = Instantiate(shader);

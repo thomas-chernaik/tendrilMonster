@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MonsterArm : MonoBehaviour
 {
+    public float spawnTime;
+    public float despawnTime;
     public float intervalBetweenAttacks;
     public float attackNumber;
     public float attackTime;
@@ -20,8 +22,10 @@ public class MonsterArm : MonoBehaviour
     //public float swayDistanceMultiplier;
     public Transform centre;
     public Transform target;
+    public Vector3 targetPosition;
     public ClipMesh clipper;
-    public bool swaying;
+    public GameObject arm;
+    bool swaying = true;
     //the velocity the arm is swaying at
     //Vector3 swayVelocity;
     //the coords of the arm relative to the centre
@@ -29,10 +33,12 @@ public class MonsterArm : MonoBehaviour
     public float num;
     bool movingBack;
     bool stationary;
-    public bool attacking;
+    bool attacking;
 
     float timer;
-
+    float timeLeft;
+    bool isSpawning;
+    bool isDespawning;
    
     // Start is called before the first frame update
     void Start()
@@ -84,6 +90,7 @@ public class MonsterArm : MonoBehaviour
             //check if stationary time is up
             if(timer > stationaryTime)
             {
+
                 stationary = false;
                 movingBack = true;
                 timer = 0;
@@ -93,7 +100,7 @@ public class MonsterArm : MonoBehaviour
         else if(movingBack)
         {
             //move it back to the original place it was
-            transform.position = Vector3.Lerp(target.position, centre.position + armPosition, timer / moveBackTime);
+            transform.position = Vector3.Lerp(targetPosition, centre.position + armPosition, timer / moveBackTime);
             //if its done then we are done with the attack and can go back to swaying
             if(timer > moveBackTime)
             {
@@ -107,7 +114,7 @@ public class MonsterArm : MonoBehaviour
         //if the arm is moving towards the target lerp it towards the target
         else if (attacking)
         {
-            transform.position = Vector3.Lerp(centre.position + armPosition, target.position, timer / attackTime);
+            transform.position = Vector3.Lerp(centre.position + armPosition, targetPosition, timer / attackTime);
             if (timer > attackTime)
             {
                 stationary = true;
@@ -116,9 +123,50 @@ public class MonsterArm : MonoBehaviour
         }
        
     }
+    public void Despawn()
+    {
+        if (isSpawning)
+        {
+            isSpawning = false;
+            isDespawning = true;
+            return;
+        }
+        timeLeft = despawnTime;
+        isDespawning = true;
+    }
     // Update is called once per frame
     void Update()
     {
+        if (timeLeft < 0)
+        {
+            clipper.UpdateMesh();
+
+            if (isDespawning)
+            {
+                clipper.DisposeBuffers();
+                Destroy(arm);
+            }
+            if (isSpawning)
+            {
+                isSpawning = false;
+                timeLeft = despawnTime;
+
+            }
+        }
+        else if (isDespawning)
+        {
+            timeLeft -= Time.deltaTime;
+            clipper.scaler = timeLeft / despawnTime;
+            clipper.UpdateMesh();
+
+        }
+        else if (isSpawning)
+        {
+            timeLeft -= Time.deltaTime;
+            transform.GetComponentInChildren<ClipMesh>().scaler = 1 - timeLeft / spawnTime;
+            transform.GetComponentInChildren<ClipMesh>().UpdateMesh();
+
+        }
         timer += Time.deltaTime;
 
         if (swaying)
@@ -126,6 +174,12 @@ public class MonsterArm : MonoBehaviour
             Swayer();
             if (timer > intervalBetweenAttacks)
             {
+                if(attackNumber-- == 0)
+                {
+                    Despawn();
+                    return;
+                }
+                targetPosition = target.position;
                 swaying = false;
                 attacking = true;
                 timer = 0;
