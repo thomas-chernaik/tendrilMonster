@@ -25,6 +25,7 @@ public class MonsterArm : MonoBehaviour
     public Vector3 targetPosition;
     public ClipMesh clipper;
     public GameObject arm;
+    public Targeter targeter;
     bool swaying = true;
     //the velocity the arm is swaying at
     //Vector3 swayVelocity;
@@ -143,6 +144,7 @@ public class MonsterArm : MonoBehaviour
 
             if (isDespawning)
             {
+                targeter.spawnedArm = false;
                 clipper.DisposeBuffers();
                 Destroy(arm);
             }

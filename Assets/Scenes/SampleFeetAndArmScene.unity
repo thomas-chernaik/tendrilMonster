@@ -311,6 +311,14 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3647201163334392599, guid: c95164e763424964d9a580532fc0dc80, type: 3}
+      propertyPath: attackNumber
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3647201163782338668, guid: c95164e763424964d9a580532fc0dc80, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.02
+      objectReference: {fileID: 0}
     - target: {fileID: 3863862475663799913, guid: c95164e763424964d9a580532fc0dc80, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -359,5 +367,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8062729266999641590, guid: c95164e763424964d9a580532fc0dc80, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1eb64f1872f69c44eb5c2e229f47da6b, type: 2}
+    m_RemovedComponents:
+    - {fileID: 3647201163334392596, guid: c95164e763424964d9a580532fc0dc80, type: 3}
+    - {fileID: 3647201163334392597, guid: c95164e763424964d9a580532fc0dc80, type: 3}
+    - {fileID: 3647201163334392586, guid: c95164e763424964d9a580532fc0dc80, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: c95164e763424964d9a580532fc0dc80, type: 3}
