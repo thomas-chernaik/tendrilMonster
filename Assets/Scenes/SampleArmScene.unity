@@ -367,7 +367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   intervalBetweenAttacks: 0
   attacksPerGo: 0
-  swayAmount: 10
+  swayAmount: 5
   radiusChangeAmount: 1
   swayRadius: 1
   minSwayRadius: 0.5
