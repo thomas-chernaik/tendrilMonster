@@ -40,6 +40,7 @@ public class Targeter : MonoBehaviour
                     obj.transform.localRotation = Quaternion.identity;
                     theSpawnedArm = obj.GetComponentInChildren<MonsterArm>();
                     theSpawnedArm.target = target;
+                    theSpawnedArm.targeter = this;
                 }
 
             }

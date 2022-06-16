@@ -38,13 +38,13 @@ public class MonsterArm : MonoBehaviour
 
     float timer;
     float timeLeft;
-    bool isSpawning;
+    bool isSpawning = true;
     bool isDespawning;
    
     // Start is called before the first frame update
     void Start()
     {
-        
+        timeLeft = spawnTime;
     }
 
     /*
@@ -165,8 +165,8 @@ public class MonsterArm : MonoBehaviour
         else if (isSpawning)
         {
             timeLeft -= Time.deltaTime;
-            transform.GetComponentInChildren<ClipMesh>().scaler = 1 - timeLeft / spawnTime;
-            transform.GetComponentInChildren<ClipMesh>().UpdateMesh();
+            clipper.scaler = 1 - timeLeft / spawnTime;
+            clipper.UpdateMesh();
 
         }
         timer += Time.deltaTime;

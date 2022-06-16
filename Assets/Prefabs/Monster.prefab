@@ -167,7 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   arm: {fileID: 652839370588014227, guid: 6d52b9abad9def944ae21e7c67a875ad, type: 3}
-  reachDistance: 5
+  reachDistance: 4
   timeBetweenArms: 2
   spawnedArm: 0
 --- !u!1 &3863862476922419688
